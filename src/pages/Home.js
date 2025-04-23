@@ -12,8 +12,18 @@ const Home = () => {
     const fetchVenues = async () => {
       try {
         const response = await api.get("/holidaze/venues");
-        setVenues(response.data);
+        console.log("👉 API response:", response.data);
+
+        // Sjekk at vi faktisk får en array
+        if (Array.isArray(response.data)) {
+          setVenues(response.data);
+        } else if (Array.isArray(response.data.data)) {
+          setVenues(response.data.data); // fallback for ev. API-struktur
+        } else {
+          throw new Error("Unexpected API response format");
+        }
       } catch (err) {
+        console.error("❌ Failed to fetch venues:", err);
         setError("Failed to load venues");
       } finally {
         setLoading(false);
