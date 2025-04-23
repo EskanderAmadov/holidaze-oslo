@@ -74,34 +74,38 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 # Mappestruktur
 
 src/
-├── assets/                        # Egne bilder, fonter og ikoner som brukes i komponenter
-├── components/                    # Gjenbrukbare UI-komponenter
-│   ├── Navbar.js                  # Navigasjonsmeny med lenker for brukere/admin
-│   ├── VenueCard.js               # Kortvisning av enkelt Venue (navn, bilde, info)
-│   └── BookingForm.js             # Skjema for å booke et opphold på et Venue
-├── layouts/                       # Layout-komponenter for forskjellige sider
-│   ├── MainLayout.js              # Layout for vanlig bruker (med navbar etc.)
-│   └── AdminLayout.js             # Layout for admin-/venue-manager-sider
-├── pages/                         # Applikasjonens ulike sider (views)
-│   ├── Home.js                    # Forsiden med liste over venues
-│   ├── VenueDetail.js             # Detaljside for valgt venue (med bookingskjema og kalender)
-│   ├── Login.js                   # Innloggingsside
-│   ├── Register.js                # Registrering for både brukere og venue-managers
-│   ├── Profile.js                 # Brukerprofil (avatar, bookings osv.)
-│   ├── CreateVenue.js             # Skjema for å legge til nytt venue
-│   ├── EditVenue.js               # Redigere eksisterende venue (bare hvis manager)
-│   └── AdminDashboard.js          # Adminside for å se egne venues og tilhørende bookings
-├── services/                      # Håndtering av API-kall og autentisering
-│   ├── api.js                     # Grunnleggende axios-oppsett og API-endepunkter
-│   └── auth.js                    # Login, logout, token-lagring osv.
-├── hooks/                         # Egendefinerte React hooks
-│   ├── useAuth.js                 # Håndtering av login-status, userInfo osv.
-│   └── useVenues.js               # Hook for å hente venues og venue-info
-├── context/                       # Global state via Context API
-│   └── AuthContext.js             # Gir appen tilgang til brukerdata, login, logout m.m.
-├── utils/                         # Diverse hjelpefunksjoner
-│   ├── formatDate.js              # Formattere datoer for visning
-│   └── validateEmail.js           # Enkelt regex-sjekk for e-post
-├── App.js                         # Hovedkomponent, inneholder router og layout
-├── index.js                       # Entry point, renderer <App /> i DOM
-└── routes.js                      # Definerer og organiserer alle ruter/sider i appen
+├── assets/               // Custom images, icons, fonts, or static files used in src
+├── components/           // Reusable UI components
+│   ├── Navbar.js         // Navigation bar with links for users/admins, includes logout
+│   ├── VenueCard.js      // Displays venue information in a styled card
+│   ├── BookingForm.js    // Booking form with calendar, guest input and API call
+│   ├── VenueBookings.js  // Displays bookings for a specific venue (for venue managers)
+├── layouts/              // Layout components for different sections of the app
+│   ├── MainLayout.js     // Layout wrapper with navbar for public-facing pages
+│   └── AdminLayout.js    // Layout for admin/venue manager dashboard pages
+├── pages/                // Main views/screens of the application
+│   ├── Home.js           // Home page showing list of available venues
+│   ├── VenueDetail.js    // Page showing details of a selected venue with calendar/booking
+│   ├── Login.js          // Login screen with form and validation
+│   ├── Register.js       // Registration screen for customers and venue managers
+│   ├── Profile.js        // User profile page with avatar and upcoming bookings
+│   ├── CreateVenue.js    // Form to create a new venue (for managers only)
+│   ├── EditVenue.js      // Form to edit an existing venue
+│   └── AdminDashboard.js // Dashboard for managing own venues and related bookings
+├── services/             // API interaction and authentication services
+│   ├── api.js            // Axios instance with base URL and automatic token injection
+│   ├── auth.js           // Functions for login, registration, and logout
+│   ├── venues.js         // CRUD functions for venue management
+│   ├── bookings.js       // Functions for creating and retrieving bookings
+│   └── profile.js        // Functions for retrieving/updating user data and avatar
+├── hooks/                // Custom React hooks
+│   ├── useAuth.js        // Hook to access and manage authentication state
+│   └── useVenues.js      // Hook to fetch and filter venues
+├── context/              // Global state management via React Context
+│   └── AuthContext.js    // Provides access to user data, login, logout across the app
+├── utils/                // Utility/helper functions
+│   ├── formatDate.js     // Formats dates for display
+│   └── validateEmail.js  // Validates email addresses using regex
+├── App.js                // Root component containing layouts and routing
+├── index.js              // Application entry point that renders <App /> to the DOM
+└── routes.js             // Central routing configuration using react-router-dom

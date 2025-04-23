@@ -1,0 +1,142 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import api from "../services/api";
+
+const EditVenue = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [venue, setVenue] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchVenue = async () => {
+      try {
+        const res = await api.get(`/holidaze/venues/${id}`);
+        setVenue(res.data);
+      } catch (err) {
+        console.error("Failed to load venue:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVenue();
+  }, [id]);
+
+  if (loading) return <div className="container mt-5">Loading venue...</div>;
+  if (!venue) return <div className="container mt-5 text-danger">Venue not found</div>;
+
+  const initialValues = {
+    name: venue.name,
+    description: venue.description,
+    media: [venue.media?.[0] || ""],
+    price: venue.price,
+    maxGuests: venue.maxGuests,
+    wifi: venue.meta?.wifi || false,
+    parking: venue.meta?.parking || false,
+    breakfast: venue.meta?.breakfast || false,
+    pets: venue.meta?.pets || false,
+  };
+
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Required"),
+    description: Yup.string().required("Required"),
+    media: Yup.array().of(Yup.string().url("Invalid URL")),
+    price: Yup.number().positive().required(),
+    maxGuests: Yup.number().min(1).required(),
+  });
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      const updatedVenue = {
+        ...values,
+        media: values.media.filter((url) => url !== ""),
+        meta: {
+          wifi: values.wifi,
+          parking: values.parking,
+          breakfast: values.breakfast,
+          pets: values.pets,
+        },
+      };
+
+      await api.put(`/holidaze/venues/${id}`, updatedVenue);
+      navigate("/admin");
+    } catch (error) {
+      console.error("Error updating venue:", error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="container mt-5">
+      <h2>Edit Venue</h2>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <div className="mb-3">
+              <label>Name</label>
+              <Field name="name" className="form-control" />
+              <ErrorMessage name="name" component="div" className="text-danger" />
+            </div>
+
+            <div className="mb-3">
+              <label>Description</label>
+              <Field name="description" as="textarea" className="form-control" />
+              <ErrorMessage name="description" component="div" className="text-danger" />
+            </div>
+
+            <div className="mb-3">
+              <label>Media URL</label>
+              <Field name="media[0]" className="form-control" />
+              <ErrorMessage name="media[0]" component="div" className="text-danger" />
+            </div>
+
+            <div className="mb-3">
+              <label>Price per night</label>
+              <Field name="price" type="number" className="form-control" />
+              <ErrorMessage name="price" component="div" className="text-danger" />
+            </div>
+
+            <div className="mb-3">
+              <label>Max Guests</label>
+              <Field name="maxGuests" type="number" className="form-control" />
+              <ErrorMessage name="maxGuests" component="div" className="text-danger" />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-check">
+                <Field type="checkbox" name="wifi" className="form-check-input" />
+                Wi-Fi
+              </label>
+              <label className="form-check">
+                <Field type="checkbox" name="parking" className="form-check-input" />
+                Parking
+              </label>
+              <label className="form-check">
+                <Field type="checkbox" name="breakfast" className="form-check-input" />
+                Breakfast
+              </label>
+              <label className="form-check">
+                <Field type="checkbox" name="pets" className="form-check-input" />
+                Pets
+              </label>
+            </div>
+
+            <button type="submit" className="btn btn-success" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save Changes"}
+            </button>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
+
+export default EditVenue;
