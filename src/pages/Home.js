@@ -7,7 +7,7 @@ const Home = () => {
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+ 
   useEffect(() => {
     const fetchVenues = async () => {
       try {

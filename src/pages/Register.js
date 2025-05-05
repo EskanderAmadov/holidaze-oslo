@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -8,14 +8,17 @@ import { useAuth } from "../context/AuthContext";
 const Register = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleRegister = async (values, { setSubmitting, setErrors }) => {
+  const handleRegister = async (values, { setSubmitting }) => {
+    setErrorMessage("");
+
     try {
       const userData = await registerUser(values);
-      login(userData); // Automatically log in the user
+      login(userData); // Auto-login
       navigate("/profile");
     } catch (error) {
-      setErrors({ email: error.message });
+      setErrorMessage(error.message || "Registration failed. Try again.");
     } finally {
       setSubmitting(false);
     }
@@ -29,12 +32,15 @@ const Register = () => {
       .required("Email is required"),
     password: Yup.string().min(6, "Must be at least 6 characters").required("Password is required"),
     avatar: Yup.string().url("Must be a valid image URL").optional(),
-    venueManager: Yup.boolean(), // Checkbox
+    venueManager: Yup.boolean(),
   });
 
   return (
     <div className="container mt-5">
       <h2>Register</h2>
+
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+
       <Formik
         initialValues={{
           name: "",

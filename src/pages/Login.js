@@ -1,5 +1,4 @@
-// src/pages/Login.js
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -9,14 +8,17 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = async (values, { setSubmitting, setErrors }) => {
+  const handleLogin = async (values, { setSubmitting }) => {
+    setErrorMessage("");
+
     try {
       const userData = await loginUser(values);
       login(userData);
       navigate("/profile");
     } catch (error) {
-      setErrors({ email: error.message });
+      setErrorMessage(error.message || "Login failed. Try again.");
     } finally {
       setSubmitting(false);
     }
@@ -30,6 +32,9 @@ const Login = () => {
   return (
     <div className="container mt-5">
       <h2>Login</h2>
+
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={validationSchema}

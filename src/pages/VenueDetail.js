@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../services/api";
-import BookingForm from "../components/BookingForm"; // 👈 Import bookingform
+import BookingForm from "../components/BookingForm";
 
 const VenueDetail = () => {
   const { id } = useParams();
@@ -39,17 +39,34 @@ const VenueDetail = () => {
     meta,
   } = venue;
 
-  const imageUrl = media?.[0] || "https://via.placeholder.com/800x400?text=No+Image";
-
   return (
     <div className="container mt-5">
       <h2>{name}</h2>
-      <img
-        src={imageUrl}
-        alt={name}
-        className="img-fluid rounded mb-3"
-        style={{ maxHeight: "400px", objectFit: "cover", width: "100%" }}
-      />
+
+      {/* 🖼 Image gallery */}
+      {Array.isArray(media) && media.length > 0 ? (
+        <div className="row g-3 mb-4">
+          {media.map((item, index) => (
+            <div className="col-md-4" key={index}>
+              <img
+                src={item.url || "https://via.placeholder.com/400x300?text=No+Image"}
+                alt={item.alt || `${name} image ${index + 1}`}
+                className="img-fluid rounded"
+                style={{ height: "250px", objectFit: "cover", width: "100%" }}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mb-4">
+          <img
+            src="https://via.placeholder.com/800x400?text=No+Image"
+            alt="No image available"
+            className="img-fluid rounded"
+            style={{ maxHeight: "400px", objectFit: "cover", width: "100%" }}
+          />
+        </div>
+      )}
 
       <p>{description}</p>
 
@@ -66,7 +83,7 @@ const VenueDetail = () => {
         {meta?.pets && <li className="list-group-item">✔️ Pets allowed</li>}
       </ul>
 
-      {/* Booking form */}
+      {/* 📅 Booking form */}
       <BookingForm venueId={venue.id} />
     </div>
   );

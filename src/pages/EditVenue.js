@@ -9,6 +9,8 @@ const EditVenue = () => {
   const navigate = useNavigate();
   const [venue, setVenue] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchVenue = async () => {
@@ -48,6 +50,9 @@ const EditVenue = () => {
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    setErrorMessage("");
+    setSuccessMessage("");
+
     try {
       const updatedVenue = {
         ...values,
@@ -61,9 +66,11 @@ const EditVenue = () => {
       };
 
       await api.put(`/holidaze/venues/${id}`, updatedVenue);
-      navigate("/admin");
+      setSuccessMessage("Venue updated successfully!");
+      setTimeout(() => navigate("/admin"), 1500);
     } catch (error) {
       console.error("Error updating venue:", error);
+      setErrorMessage("Failed to update venue. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -72,6 +79,10 @@ const EditVenue = () => {
   return (
     <div className="container mt-5">
       <h2>Edit Venue</h2>
+
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
+
       <Formik
         enableReinitialize
         initialValues={initialValues}

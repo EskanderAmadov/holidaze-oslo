@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,8 @@ import api from "../services/api";
 
 const CreateVenue = () => {
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const initialValues = {
     name: "",
@@ -27,7 +29,10 @@ const CreateVenue = () => {
     maxGuests: Yup.number().min(1).required("Required"),
   });
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setErrorMessage("");
+    setSuccessMessage("");
+
     try {
       const venueData = {
         ...values,
@@ -41,9 +46,12 @@ const CreateVenue = () => {
       };
 
       await api.post("/holidaze/venues", venueData);
-      navigate("/admin");
+      setSuccessMessage("Venue created successfully!");
+      resetForm();
+      setTimeout(() => navigate("/admin"), 1500);
     } catch (error) {
       console.error("Error creating venue:", error);
+      setErrorMessage("Failed to create venue. Please check your inputs.");
     } finally {
       setSubmitting(false);
     }
@@ -52,6 +60,10 @@ const CreateVenue = () => {
   return (
     <div className="container mt-5">
       <h2>Create a New Venue</h2>
+
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
