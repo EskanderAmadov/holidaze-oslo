@@ -75,38 +75,37 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 src/
 ├── assets/               // Custom images, icons, fonts, or static files used in src
 ├── components/           // Reusable UI components
-│   ├── Navbar.js         // Navigation bar with links for users/admins, includes logout - Kontrollert
-│   ├── VenueCard.js      // Displays venue information in a styled card - Kontrollert
-│   ├── BookingForm.js    // Booking form with calendar, guest input and API call - Kontrollert
-│   ├── VenueBookings.js  // Displays bookings for a specific venue (for venue managers) - Kontrollert
-│   ├── PrivateRoute.js   // Protects routes only for logged-in users - ✅ NY
-│   └── ManagerRoute.js   // Protects routes only for venue managers - ✅ NY
+│   ├── Navbar.js         // Navigation bar with links for users/admins, includes logout - ✅
+│   ├── VenueCard.js      // Displays venue information in a styled card - ✅
+│   ├── BookingForm.js    // Booking form with calendar, guest input and API call - ✅
+│   ├── VenueBookings.js  // Displays bookings for a specific venue (for venue managers) - ✅
+│   └── ProtectedRoute.js // Protects routes based on login and role - ✅ (NY)
 ├── layouts/              // Layout components for different sections of the app
-│   ├── MainLayout.js     // Layout wrapper with navbar for public-facing pages - Kontrollert
-│   └── AdminLayout.js    // Layout for admin/venue manager dashboard pages - Kontrollert
+│   ├── MainLayout.js     // Layout wrapper with navbar for public-facing pages - ✅
+│   └── AdminLayout.js    // Layout for admin/venue manager dashboard pages - ✅
 ├── pages/                // Main views/screens of the application
-│   ├── Home.js           // Home page showing list of available venues - Kontrollert
-│   ├── VenueDetail.js    // Page showing details of a selected venue with calendar/booking - Kontrollert
-│   ├── Login.js          // Login screen with form and validation - Kontrollert
-│   ├── Register.js       // Registration screen for customers and venue managers - Kontrollert
-│   ├── Profile.js        // User profile page with avatar and upcoming bookings - Kontrollert
-│   ├── CreateVenue.js    // Form to create a new venue (for managers only) - Kontrollert
-│   ├── EditVenue.js      // Form to edit an existing venue - Kontrollert
-│   └── AdminDashboard.js // Dashboard for managing own venues and related bookings - Kontrollert
-├── services/             // API interaction and authentication services
-│   ├── api.js            // Axios instance with base URL and automatic token injection - Kontrollert
-│   ├── auth.js           // Functions for login, registration, and logout - Kontrollert
-│   ├── venues.js         // CRUD functions for venue management - Kontrollert
-│   ├── bookings.js       // Functions for creating and retrieving bookings - Kontrollert
-│   └── profile.js        // Functions for retrieving/updating user data and avatar - Kontrollert
+│   ├── Home.js           // Home page showing list of available venues - ✅
+│   ├── VenueDetail.js    // Venue details page with carousel and booking - ✅
+│   ├── Login.js          // Login screen with form and validation - ✅
+│   ├── Register.js       // Registration screen for customers and venue managers - ✅
+│   ├── Profile.js        // User profile page with avatar and bookings - ✅
+│   ├── CreateVenue.js    // Form to create a new venue (venue managers only) - ✅
+│   ├── EditVenue.js      // Form to edit a venue - ✅
+│   └── AdminDashboard.js // Dashboard for venue managers with bookings and delete - ✅
+├── services/             // API and data handling
+│   ├── api.js            // Axios instance - ✅
+│   ├── auth.js           // Auth functions (login, register, logout) - ✅
+│   ├── venues.js         // CRUD for venues - ✅
+│   ├── bookings.js       // Booking functions - ✅
+│   └── profile.js        // Profile & avatar updates - ✅
 ├── hooks/                // Custom React hooks
-│   ├── useAuth.js        // Hook to access and manage authentication state - Kontrollert
-│   └── useVenues.js      // Hook to fetch and filter venues - Kontrollert
-├── context/              // Global state management via React Context
-│   └── AuthContext.js    // Provides access to user data, login, logout across the app - Kontrollert
+│   ├── useAuth.js        // Hook for auth context - ✅
+│   └── useVenues.js      // Hook to fetch/filter venues - ✅
+├── context/              // Global state/context
+│   └── AuthContext.js    // Auth provider and context - ✅
 ├── utils/                // Utility/helper functions
-│   ├── formatDate.js     // Formats dates for display - Kontrollert
-│   └── validateEmail.js  // Validates email addresses using regex - Kontrollert
-├── App.js                // Root component containing layouts and routing - Oppdatert ✅
-├── index.js              // Application entry point that renders <App /> to the DOM - Kontrollert
-└── routes.js             // Central routing configuration using react-router-dom - Oppdatert ✅
+│   ├── formatDate.js     // Date formatting - ✅
+│   └── validateEmail.js  // Email validation - ✅
+├── App.js                // App wrapper with routes and context - ✅
+├── index.js              // App entry point - ✅
+└── routes.js             // Central route config using ProtectedRoute - ✅

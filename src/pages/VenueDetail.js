@@ -13,7 +13,7 @@ const VenueDetail = () => {
     const fetchVenue = async () => {
       try {
         const response = await api.get(`/holidaze/venues/${id}`);
-        setVenue(response.data);
+        setVenue(response.data.data); // ✅ viktig!
       } catch (err) {
         setError("Failed to load venue");
       } finally {
@@ -39,23 +39,44 @@ const VenueDetail = () => {
     meta,
   } = venue;
 
+  const validMedia = Array.isArray(media) ? media.filter((img) => img.url) : [];
+
   return (
     <div className="container mt-5">
       <h2>{name}</h2>
 
-      {/* 🖼 Image gallery */}
-      {Array.isArray(media) && media.length > 0 ? (
-        <div className="row g-3 mb-4">
-          {media.map((item, index) => (
-            <div className="col-md-4" key={index}>
-              <img
-                src={item.url || "https://via.placeholder.com/400x300?text=No+Image"}
-                alt={item.alt || `${name} image ${index + 1}`}
-                className="img-fluid rounded"
-                style={{ height: "250px", objectFit: "cover", width: "100%" }}
-              />
-            </div>
-          ))}
+      {/* 🖼 Bildevisning */}
+      {validMedia.length > 1 ? (
+        <div id="venueCarousel" className="carousel slide mb-4" data-bs-ride="carousel">
+          <div className="carousel-inner">
+            {validMedia.map((item, index) => (
+              <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
+                <img
+                  src={item.url}
+                  className="d-block w-100 rounded"
+                  alt={item.alt || name}
+                  style={{ maxHeight: "400px", objectFit: "cover" }}
+                />
+              </div>
+            ))}
+          </div>
+          <button className="carousel-control-prev" type="button" data-bs-target="#venueCarousel" data-bs-slide="prev">
+            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span className="visually-hidden">Previous</span>
+          </button>
+          <button className="carousel-control-next" type="button" data-bs-target="#venueCarousel" data-bs-slide="next">
+            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+            <span className="visually-hidden">Next</span>
+          </button>
+        </div>
+      ) : validMedia.length === 1 ? (
+        <div className="mb-4">
+          <img
+            src={validMedia[0].url}
+            alt={validMedia[0].alt || name}
+            className="img-fluid rounded"
+            style={{ maxHeight: "400px", objectFit: "cover", width: "100%" }}
+          />
         </div>
       ) : (
         <div className="mb-4">
@@ -83,7 +104,6 @@ const VenueDetail = () => {
         {meta?.pets && <li className="list-group-item">✔️ Pets allowed</li>}
       </ul>
 
-      {/* 📅 Booking form */}
       <BookingForm venueId={venue.id} />
     </div>
   );

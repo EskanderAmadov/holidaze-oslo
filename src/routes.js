@@ -1,11 +1,5 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-
-// Layouts
-import MainLayout from "./layouts/MainLayout";
-import AdminLayout from "./layouts/AdminLayout";
-
-// Pages
 import Home from "./pages/Home";
 import VenueDetail from "./pages/VenueDetail";
 import Login from "./pages/Login";
@@ -14,66 +8,48 @@ import Profile from "./pages/Profile";
 import CreateVenue from "./pages/CreateVenue";
 import EditVenue from "./pages/EditVenue";
 import AdminDashboard from "./pages/AdminDashboard";
-
-// Route guards
-import PrivateRoute from "./components/PrivateRoute";
-import ManagerRoute from "./components/ManagerRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<MainLayout><Home /></MainLayout>} />
-      <Route path="/venue/:id" element={<MainLayout><VenueDetail /></MainLayout>} />
-      <Route path="/login" element={<MainLayout><Login /></MainLayout>} />
-      <Route path="/register" element={<MainLayout><Register /></MainLayout>} />
-
-      {/* Protected routes */}
+      <Route path="/" element={<Home />} />
+      <Route path="/venue/:id" element={<VenueDetail />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route
         path="/profile"
         element={
-          <PrivateRoute>
-            <MainLayout>
-              <Profile />
-            </MainLayout>
-          </PrivateRoute>
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
         }
       />
-
-      {/* Manager-only routes */}
       <Route
         path="/admin"
         element={
-          <ManagerRoute>
-            <AdminLayout>
-              <AdminDashboard />
-            </AdminLayout>
-          </ManagerRoute>
+          <ProtectedRoute requireManager>
+            <AdminDashboard />
+          </ProtectedRoute>
         }
       />
       <Route
         path="/venue/create"
         element={
-          <ManagerRoute>
-            <AdminLayout>
-              <CreateVenue />
-            </AdminLayout>
-          </ManagerRoute>
+          <ProtectedRoute requireManager>
+            <CreateVenue />
+          </ProtectedRoute>
         }
       />
       <Route
         path="/venue/edit/:id"
         element={
-          <ManagerRoute>
-            <AdminLayout>
-              <EditVenue />
-            </AdminLayout>
-          </ManagerRoute>
+          <ProtectedRoute requireManager>
+            <EditVenue />
+          </ProtectedRoute>
         }
       />
-
-      {/* 404 fallback */}
-      <Route path="*" element={<MainLayout><h1>404 - Page Not Found</h1></MainLayout>} />
+      <Route path="*" element={<h1>404 - Side ikke funnet</h1>} />
     </Routes>
   );
 }

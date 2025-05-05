@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import api from "../services/api";
-import VenueBookings from "../components/VenueBookings"; // 👈 Legg til import
+import VenueBookings from "../components/VenueBookings";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -25,6 +25,19 @@ const AdminDashboard = () => {
     fetchVenues();
   }, [user.name]);
 
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm("Are you sure you want to delete this venue?");
+    if (!confirmed) return;
+
+    try {
+      await api.delete(`/holidaze/venues/${id}`);
+      setVenues((prev) => prev.filter((v) => v.id !== id));
+    } catch (err) {
+      alert("Failed to delete venue.");
+      console.error("Delete error:", err);
+    }
+  };
+
   if (loading) return <div className="container mt-5">Loading your venues...</div>;
   if (error) return <div className="container mt-5 text-danger">{error}</div>;
 
@@ -45,12 +58,21 @@ const AdminDashboard = () => {
             <div className="card mb-3" key={venue.id}>
               <div className="card-body">
                 <h5 className="card-title">{venue.name}</h5>
-                <div className="d-flex justify-content-between">
-                  <Link to={`/venue/${venue.id}`} className="btn btn-outline-primary btn-sm">View</Link>
-                  <Link to={`/venue/edit/${venue.id}`} className="btn btn-outline-secondary btn-sm">Edit</Link>
+                <div className="d-flex gap-2 flex-wrap mb-2">
+                  <Link to={`/venue/${venue.id}`} className="btn btn-outline-primary btn-sm">
+                    View
+                  </Link>
+                  <Link to={`/venue/edit/${venue.id}`} className="btn btn-outline-secondary btn-sm">
+                    Edit
+                  </Link>
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={() => handleDelete(venue.id)}
+                  >
+                    Delete
+                  </button>
                 </div>
 
-                {/* 👇 Bookings per venue */}
                 <VenueBookings venueId={venue.id} />
               </div>
             </div>

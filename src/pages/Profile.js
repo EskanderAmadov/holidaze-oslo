@@ -4,11 +4,13 @@ import api from "../services/api";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState(user.avatar || "");
+  const [avatarMessage, setAvatarMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,12 +32,33 @@ const Profile = () => {
     fetchData();
   }, [user]);
 
+  const handleAvatarUpdate = async (e) => {
+    e.preventDefault();
+    setAvatarMessage("");
+
+    try {
+      const response = await api.put(`/holidaze/profiles/${user.name}`, {
+        avatar: {
+          url: avatarUrl,
+          alt: user.name,
+        },
+      });
+
+      login(response.data); // oppdater context
+      setAvatarMessage("Avatar updated successfully!");
+    } catch (err) {
+      setAvatarMessage("Failed to update avatar.");
+      console.error(err);
+    }
+  };
+
   if (loading) return <div className="container mt-5">Loading profile...</div>;
   if (error) return <div className="container mt-5 text-danger">{error}</div>;
 
   return (
     <div className="container mt-5">
       <h2>Welcome, {user.name}</h2>
+
       <img
         src={user.avatar || "https://via.placeholder.com/150"}
         alt={user.name}
@@ -44,6 +67,22 @@ const Profile = () => {
       />
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Role:</strong> {user.venueManager ? "Venue Manager" : "Customer"}</p>
+
+      <form onSubmit={handleAvatarUpdate} className="mb-4">
+        <div className="mb-2">
+          <label htmlFor="avatarUrl" className="form-label">Change Avatar URL</label>
+          <input
+            type="url"
+            id="avatarUrl"
+            value={avatarUrl}
+            onChange={(e) => setAvatarUrl(e.target.value)}
+            className="form-control"
+            placeholder="https://..."
+          />
+        </div>
+        <button type="submit" className="btn btn-sm btn-primary">Update Avatar</button>
+        {avatarMessage && <div className="mt-2 text-info">{avatarMessage}</div>}
+      </form>
 
       {user.venueManager ? (
         <>
